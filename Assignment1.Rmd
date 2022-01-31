@@ -2,31 +2,46 @@
 title: "Assignment1"
 author: "Zach Rippas"
 date: "1/26/2022"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+In this assignment, I'll be exploring the Boston census data to find something interesting.
+Reading in the data set:
+
+```{r}
+library(readxl)
+#options( java.parameters = "-Xmx4g" )
+censusData <- read_excel("Census_Data_1880_1930.xlsx", 1)
+```
+More specifically, I'd look to look at ages and how age statistics have differed over time. To get the data on ages, we can take a subset of the dataset to extract only the 'year' and 'age' columns.
+
+```{r}
+ages <- subset(censusData, select = c("year", "age"))
 ```
 
-## R Markdown
+Let's look at some statistics on age during the years available to us in the data. To separate the data based on age, we'll first need to know what years are recorded in the main data set.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r}
+unique(censusData[c("year")])
+```
+Now we can separate the dataset into three datasets using the subset() function.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+eighteeneighty <- subset(ages, year == 1880, select = c("year", "age"))
+nineteenhundred <- subset(ages, year == 1900, select = c("year", "age"))
+nineteenthirty <- subset(ages, year == 1930, select = c("year", "age"))
 ```
 
-## Including Plots
+Using the summary() function, we can observe some important statistics for each interval.
 
-You can also embed plots, for example:
+```{r}
+# Note that we have to call the as.numeric() function on the data sets because a small amount of the data are strings (e.g. "less than 1") for age. This may slightly alter the accuracy, but not to a significant degree since these strings values are a very small subset of all the ages.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+summary(as.numeric(eighteeneighty$age))
+summary(as.numeric(nineteenhundred$age))
+summary(as.numeric(nineteenthirty$age))
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
-Hello my name is Zach
+From this, we can observe 
