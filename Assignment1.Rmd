@@ -12,7 +12,6 @@ Reading in the data set:
 
 ```{r}
 library(readxl)
-#options( java.parameters = "-Xmx4g" )
 censusData <- read_excel("Census_Data_1880_1930.xlsx", 1)
 ```
 More specifically, I'd look to look at ages and how age statistics have differed over time. To get the data on ages, we can take a subset of the dataset to extract only the 'year' and 'age' columns.
@@ -24,6 +23,7 @@ ages <- subset(censusData, select = c("year", "age"))
 Let's look at some statistics on age during the years available to us in the data. To separate the data based on age, we'll first need to know what years are recorded in the main data set.
 
 ```{r}
+#outputs only the unique members of a vector
 unique(censusData[c("year")])
 ```
 Now we can separate the dataset into three datasets using the subset() function.
@@ -36,12 +36,46 @@ nineteenthirty <- subset(ages, year == 1930, select = c("year", "age"))
 
 Using the summary() function, we can observe some important statistics for each interval.
 
-```{r}
-# Note that we have to call the as.numeric() function on the data sets because a small amount of the data are strings (e.g. "less than 1") for age. This may slightly alter the accuracy, but not to a significant degree since these strings values are a very small subset of all the ages.
+Note that we have to call the as.numeric() function on the data sets because a small amount of the data are strings (e.g. "less than 1") for age. This may slightly alter the accuracy, but not to a significant degree since these strings values are a very small subset of all the ages.
 
-summary(as.numeric(eighteeneighty$age))
-summary(as.numeric(nineteenhundred$age))
-summary(as.numeric(nineteenthirty$age))
+```{r}
+
+#summary returns a summary object that contains mean, median, upper and lower quartiles, and min and max
+s1 <- summary(as.numeric(eighteeneighty$age))
+s1
+
+s2 <- summary(as.numeric(nineteenhundred$age))
+s2
+
+s3 <- summary(as.numeric(nineteenthirty$age))
+s3
 ```
 
-From this, we can observe 
+From this, we can observe that the mean and median age has increased over the years. We can also see that the quartiles and medians have increased (or at least stayed the same) over the course of the years.
+
+To visualize this data, we can plot the data points using R's plot function with the year on the x-axis and the age on the y-axis.
+
+```{r}
+plot(ages$year, ages$age, xlab = "Year", ylab = "Age")
+```
+
+However, it's really hard to see the trend that way. Let's try using the ggplot2 library to make a line chart instead.
+
+```{r}
+library(ggplot2)
+
+#create dataframe
+xValue <- c(1880, 1900, 1930)
+yValue <- c(as.numeric(s1[4]), as.numeric(s2[4]), as.numeric(s3[4]))
+yValue
+
+data <- data.frame(xValue,yValue)
+
+#plotting
+ggplot(data, aes(x=xValue, y=yValue)) +
+  geom_line() + geom_point() + labs(x = "Year") + labs(y = "Mean Age")
+
+```
+Here, we can clearly see the increase in mean age over time. This could potentially be attributed to advances in technology and medicine that increased life expectancy.
+
+
