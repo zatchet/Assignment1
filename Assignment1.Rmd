@@ -67,7 +67,6 @@ library(ggplot2)
 #create dataframe
 xValue <- c(1880, 1900, 1930)
 yValue <- c(as.numeric(s1[4]), as.numeric(s2[4]), as.numeric(s3[4]))
-yValue
 
 data <- data.frame(xValue,yValue)
 
@@ -76,6 +75,8 @@ ggplot(data, aes(x=xValue, y=yValue)) +
   geom_line() + geom_point() + labs(x = "Year") + labs(y = "Mean Age")
 
 ```
+
+
 Here, we can clearly see the increase in mean age over time. This could potentially be attributed to advances in technology and medicine that increased life expectancy.
 
 
